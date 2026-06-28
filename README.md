@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Usman's Cloud & DevOps Roadmap Tracker
 
-## Getting Started
+Track your 52-week Cloud & DevOps learning journey with persistent progress, notes, and streaks.
 
-First, run the development server:
+## Stack
+- **Next.js 16** (App Router)
+- **Neon** — serverless Postgres (free tier)
+- **Prisma** — ORM + migrations
+- **Vercel** — deployment
 
+## Local Setup
+
+### 1. Clone & install
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <your-repo>
+cd myroad-app
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Set up Neon database (free)
+1. Go to [neon.tech](https://neon.tech) → create a free account
+2. Create a new project → copy the **Connection string**
+3. In the dashboard, get both **pooled** and **direct** URLs
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Configure environment
+```bash
+cp .env.example .env
+```
+Fill in your Neon URLs in `.env`:
+```
+DATABASE_URL="postgresql://..."   # pooled (with pgbouncer=true)
+DIRECT_URL="postgresql://..."     # direct (no pgbouncer)
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. Run migrations
+```bash
+npx prisma migrate dev --name init
+```
 
-## Learn More
+### 5. Start dev server
+```bash
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deploy to Vercel
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Push your code to GitHub
+2. Go to [vercel.com](https://vercel.com) → New Project → import your repo
+3. Add environment variables in Vercel dashboard:
+   - `DATABASE_URL` → your Neon **pooled** URL
+   - `DIRECT_URL` → your Neon **direct** URL
+4. Deploy — Vercel runs `prisma generate && next build` automatically
 
-## Deploy on Vercel
+> **First deploy**: After deploying, run migrations once:
+> ```bash
+> npx prisma migrate deploy
+> ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Features
+- ✅ Mark weeks complete — saved to DB
+- 🔥 Daily streak tracking
+- 📝 Notes per week (what you learned, blockers, commit links)
+- 📊 Overall + per-phase progress bars
+- 💡 Week breakdown: topics, project, resources, LinkedIn post idea
